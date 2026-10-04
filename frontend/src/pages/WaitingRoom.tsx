@@ -86,7 +86,10 @@ export const WaitingRoom: React.FC = () => {
     setStatus('queueing');
     
     const socket = io(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}`, {
-      auth: { token }
+      auth: { token },
+      extraHeaders: {
+        'Bypass-Tunnel-Reminder': 'true'
+      }
     });
     socketRef.current = socket;
 

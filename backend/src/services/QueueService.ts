@@ -9,6 +9,11 @@ export class QueueService {
   static enqueueUser(eventId: string, userId: string, botScore: number = 0) {
     const key = `queue:${eventId}`;
     
+    // Fix: If user is already in the queue, DO NOT reset their position!
+    if (redis.zrank(key, userId) !== null) {
+      return;
+    }
+
     // Base lottery ticket: a random number between 0 and 10000.
     // Lower number = closer to the front of the queue.
     const baseLottery = Math.random() * 10000;

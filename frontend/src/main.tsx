@@ -3,6 +3,17 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 
+// Override fetch globally to bypass localtunnel warning screens
+const originalFetch = window.fetch;
+window.fetch = async (input, init) => {
+  init = init || {};
+  init.headers = {
+    ...init.headers,
+    'Bypass-Tunnel-Reminder': 'true'
+  };
+  return originalFetch(input, init);
+};
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

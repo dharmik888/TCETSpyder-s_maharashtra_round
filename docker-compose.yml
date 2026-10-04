@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  ml-server:
+    build: 
+      context: ./ML
+    ports:
+      - "8000:8000"
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3001:3001"
+    environment:
+      - ML_API_URL=http://ml-server:8000
+      - ADMIN_EMAIL=sysadmin@fairdrop.com
+      - ADMIN_PASSWORD_HASH=$2b$10$wU05z1J3xJgU.C1T.uU6N.V7K9y3pD... 
+    volumes:
+      - sqlite-data:/app
+    depends_on:
+      - ml-server
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:3001 # In production, change localhost to your server IP
+    ports:
+      - "4000:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  sqlite-data:

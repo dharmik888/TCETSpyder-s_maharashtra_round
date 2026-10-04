@@ -82,8 +82,8 @@ io.on('connection', (socket) => {
 
     // Check if they already secured a ticket previously
     if (redis.sismember(`allocated:${eventId}`, userId) === 1) {
-      socket.emit('allocation_result', { eventId, status: 'already_allocated' });
-      socket.disconnect();
+      // User is already allocated a seat, redirect them to checkout!
+      socket.emit('allocation_result', { eventId, status: 'success' });
       return;
     }
 
